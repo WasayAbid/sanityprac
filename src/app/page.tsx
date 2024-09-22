@@ -9,15 +9,16 @@ const getBlogs = async () => {
     return data;
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    return [];
+    return []; // Return an empty array in case of an error
   }
 };
 
-
-
 export default async function Home() {
   const blogs = await getBlogs();
-  
+
+  // Ensure blogs is an array before mapping
+  const blogList = Array.isArray(blogs) ? blogs : [];
+
   return (
     <main
       className="relative min-h-screen bg-cover bg-center"
@@ -35,24 +36,24 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.length > 0 ? (
-            blogs.map((blog) => (
+          {blogList.length > 0 ? (
+            blogList.map((blog) => (
               <div
                 key={blog._id}
                 className="bg-white border border-gray-200 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl"
               >
                 <div className="p-5">
                   <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                    {blog.name}
+                    {blog.name || 'Untitled'}
                   </h2>
-                  <p className="text-gray-600 mb-4">{blog.description}</p>
+                  <p className="text-gray-600 mb-4">{blog.description || 'No description available.'}</p>
                   {blog.image && (
                     <div className="w-full h-64 overflow-hidden rounded-lg mb-4">
                       <Image
                         src={urlFor(blog.image)}
                         width={300}
                         height={200}
-                        alt="Blog Image"
+                        alt={blog.title || 'Blog Image'}
                         className="w-full h-full object-cover"
                       />
                     </div>
